@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+
+<main class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <section class="text-center py-16 bg-green-50 rounded-lg shadow-md">
+        <h1 class="text-4xl font-bold text-green-700">Discover Delicious Recipes</h1>
+        <p class="mt-4 text-gray-600">Find and share everyday cooking inspiration. Start your culinary journey today!</p>
+        <a href="{{ path('app_recipe_index') }}" class="mt-6 inline-block bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-700">Browse Recipes</a>
+    </section>
+
+    <!-- Featured Recipes -->
+    <section class="mt-12">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Featured Recipes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for recipe in recipes %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="{{ asset('uploads/recipes/' ~ recipe.image | default('default-recipe.png')) }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold">{{ recipe.name }}</h3>
+                        <p class="text-gray-600 mt-2">{{ recipe.description|length > 100 ? recipe.description[:100] ~ '...' : recipe.description }}</p>
+                        <a href="{{ path('recipe_show', {'id': recipe.id}) }}" class="text-green-600 hover:underline mt-3 inline-block">View Recipe</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="mt-12">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Explore by Category</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for category in categories %}
+                <a href="{{ path('app_category_show', {'id': category.id}) }}" class="block bg-green-100 p-6 rounded-lg shadow-md text-center hover:bg-green-200">
+                    <h3 class="text-xl font-semibold text-green-700">{{ category.name }}</h3>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+
+</main>
+
+
+{% endblock %}
