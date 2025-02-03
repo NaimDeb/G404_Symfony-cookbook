@@ -24,6 +24,7 @@ final class RecipeController extends AbstractController
     {
         return $this->render('recipe/index.html.twig', [
             'recipes' => $recipeRepository->findAll(),
+            'user' => $this->getUser(),
         ]);
     }
 
@@ -89,6 +90,7 @@ final class RecipeController extends AbstractController
     {
         return $this->render('recipe/show.html.twig', [
             'recipe' => $recipe,
+            'user' => $this->getUser(),
         ]);
     }
 

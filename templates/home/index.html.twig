@@ -24,12 +24,15 @@
 
 		<!-- Categories Section -->
 		<section class="mt-12">
-			<h2 class="text-3xl font-semibold text-gray-800 mb-6">
-				Explore by Category
-			</h2>
+			<div class="flex justify-between">
+				<h2 class="text-3xl font-semibold text-gray-800 mb-6">
+					Explore by Category
+				</h2>
+				<a href="{{ path('app_category_index') }}" class="text-green-800 hover:text-green-500 transition text-xl hover:underline">Voir toutes les catégories ></a>
+			</div>
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-				{% for category in categories %}
-					<a href="{{ path('app_category_show', {'id': category.id}) }}" class="block bg-green-100 p-6 rounded-lg shadow-md text-center hover:bg-green-200">
+				{% for category in categories|slice (0,5) %}
+					<a href="{{ path('app_category_show', {'id': category.id}) }}" class="block bg-green-100 p-3 rounded-lg shadow-md text-center hover:bg-green-200">
 						<h3 class="text-xl font-semibold text-green-700">
 							{{ category.name }}
 						</h3>
@@ -40,11 +43,14 @@
 
 		<!-- Featured Recipes -->
 		<section class="mt-12">
-			<h2 class="text-3xl font-semibold text-gray-800 mb-6">
-				Featured Recipes
-			</h2>
+			<div class="flex justify-between">
+				<h2 class="text-3xl font-semibold text-gray-800 mb-6">
+					Featured Recipes
+				</h2>
+				<a href="{{ path('app_recipe_index') }}" class="text-green-800 hover:text-green-500 transition text-xl hover:underline">Voir toutes les recettes ></a>
+			</div>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{% for recipe in recipes %}
+				{% for recipe in recipes|slice(0, 3) %}
 					<div class="bg-white rounded-lg shadow-md overflow-hidden">
 						<img src="{{ asset('uploads/recipes/' ~ recipe.image[0].name | default('default-recipe.png')) }}" alt="{{ recipe.name }}" class="w-full h-48 object-cover">
 						<div class="p-4">
@@ -54,8 +60,8 @@
 							<p class="text-gray-600 mt-2">
 								{{ recipe.description|length > 100 ? recipe.description[:100] ~ '...' : recipe.description }}
 							</p>
-							<a href="{{ path('app_recipe_index', {'id': recipe.id}) }}" class="text-green-600 hover:underline mt-3 inline-block">
-								View Recipe
+							<a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="bg-green-600 text-white font-bold px-3 py-2 rounded-md hover:bg-green-700 mt-3 inline-block">
+								Voir la recette en détails
 							</a>
 						</div>
 					</div>

@@ -9,7 +9,16 @@
         <!-- Action Links at the Top -->
         <div class="flex justify-between mb-6">
             <a href="{{ path('app_recipe_index') }}" class="text-green-600 hover:text-green-800 font-medium">Back to List</a>
-            <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}" class="text-green-600 hover:text-green-800 font-medium">Edit Recipe</a>
+
+            {% if user == recipe.createdBy %}
+            
+            <div class="flex gap-4">
+                <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}" class="text-green-600 hover:text-green-800 font-medium">Edit Recipe</a>
+                {{ include('recipe/_delete_form.html.twig') }}
+            </div>
+
+            {% endif %}
+            
         </div>
 
         <!-- Recipe Main Container -->
@@ -57,10 +66,7 @@
                     <p class="text-gray-700">{{ recipe.preparation | raw }}</p>
                 </div> #}
 
-                <!-- Delete Form -->
-                <div class="mt-4">
-                    {{ include('recipe/_delete_form.html.twig') }}
-                </div>
+
             </div>
         </div>
     </div>
