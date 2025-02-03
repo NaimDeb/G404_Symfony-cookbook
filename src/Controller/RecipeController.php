@@ -30,7 +30,7 @@ final class RecipeController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager , SluggerInterface $slugger, #[Autowire('uploads/recipes')] string $recipeDirectory): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('uploads/recipes')] string $recipeDirectory): Response
     {
         $recipe = new Recipe();
 
@@ -40,17 +40,15 @@ final class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            
 
 
+            // Handle image
             $imageFile = $form->get('image')->getData();
-
-            
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-                
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
                 try {
                     $imageFile->move(
                         $recipeDirectory,
@@ -59,17 +57,25 @@ final class RecipeController extends AbstractController
                 } catch (FileException $e) {
                     throw new \Exception('Erreur lors du téléchargement du fichier.');
                 }
-                
-                
+
+                // Add categories to recipe
+                $categories = $form->get('categories')->getData();
+                foreach ($categories as $category) {
+                    $recipe->addCategory($category);
+                    $category->addRecipe($recipe); // Ensure bidirectional relationship
+                    $entityManager->persist($category); // Persist category if needed
+                }
+
+
                 $img = new Image();
                 $img->setName($newFilename);
                 $recipe->addImage($img);
-
-                
             }
-            
+
+            // handle others
             $recipe->setCreatedBy($this->getUser());
             $recipe->setSlug($slugger->slug($recipe->getName()));
+
 
             $entityManager->persist($recipe);
             $entityManager->flush();
@@ -77,7 +83,7 @@ final class RecipeController extends AbstractController
             return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        
+
 
         return $this->render('recipe/new.html.twig', [
             'recipe' => $recipe,
@@ -116,7 +122,7 @@ final class RecipeController extends AbstractController
     #[Route('/{id}', name: 'app_recipe_delete', methods: ['POST'])]
     public function delete(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$recipe->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $recipe->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($recipe);
             $entityManager->flush();
         }

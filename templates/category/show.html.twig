@@ -3,24 +3,46 @@
 {% block title %}Category{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Category Header -->
+        <div class="text-center my-10">
+            <h2 class="text-3xl font-extrabold text-gray-900">{{ category.name }}</h2>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ category.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ category.name }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Recipes Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 px-4 sm:px-8">
+            {% for recipe in category.recipe %}
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden aspect-square flex flex-col justify-between max-w-sm relative transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+                    <div class="w-full h-1/2 overflow-hidden">
+                        <img src="{{ asset('uploads/recipes/' ~ recipe.image[0].name | default('default-recipe.png')) }}" alt="{{ recipe.name }}" class="w-full h-full object-cover brightness-90 transition duration-300 ease-in-out hover:brightness-100">
+                    </div>
+                    <div class="p-3 flex flex-col justify-between flex-grow">
+                        <div class="text-center">
+                            <h3 class="text-lg sm:text-xl font-semibold text-black mb-1">
+                                {{ recipe.name }}
+                            </h3>
+                            <p class="text-sm text-black line-clamp-2 overflow-hidden text-ellipsis">
+                                {{ recipe.description }}
+                            </p>
+                        </div>
+                        <div class="flex justify-center mt-2">
+                            <a href="{{ path('app_recipe_show', {'id': recipe.id}) }}" class="bg-green-600 text-white px-3 sm:px-4 py-2 rounded-md shadow hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105">
+                                View Recipe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="col-span-full text-center text-gray-500">
+                    No recipes found.
+                </p>
+            {% endfor %}
+        </div>
 
-    <a href="{{ path('app_category_index') }}">back to list</a>
-
-    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-
-    {{ include('category/_delete_form.html.twig') }}
+        <!-- Back and Edit Buttons -->
+        <div class="mt-6 flex justify-center space-x-4">
+            <a href="{{ path('app_category_index') }}" class="text-blue-600 hover:text-blue-800">Back to list</a>
+            <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="text-yellow-600 hover:text-yellow-800">Edit</a>
+        </div>
+    </div>
 {% endblock %}
