@@ -18,42 +18,43 @@
 	<body>
 
 		<header class="bg-white shadow-md">
-			<div
-				class="container mx-auto flex justify-between items-center p-4">
-				<!-- Logo -->
-				<a href="{{ path('app_home') }}" class="text-2xl font-bold text-green-600">
-					🍳 MyCookingApp
-				</a>
+    <div class="container mx-auto flex justify-between items-center p-4">
+        <!-- Logo -->
+        <a href="{{ path('app_home') }}" class="text-2xl font-bold text-green-700 hover:text-green-800 transition">
+            🍳 MyCookingApp
+        </a>
 
-				<!-- Navigation -->
-				<nav class="space-x-6">
-					<a href="{{ path('app_recipe_index') }}" class="text-gray-700 hover:text-green-600">
-						Recipes
-					</a>
-				</nav>
+        <!-- Navigation -->
+        <nav class="space-x-4">
+            <a href="{{ path('app_recipe_index') }}" class="text-gray-700 hover:text-green-600 transition">
+                Recipes
+            </a>
+            <a href="{{ path('app_category_index') }}" class="text-gray-700 hover:text-green-600 transition">
+                Categories
+            </a>
+        </nav>
 
-				<!-- Authentication -->
-				<div>
-					{% if app.user %}
-						<span class="text-gray-700">
-							Welcome,
-							{{ app.user.username }}
-							!
-						</span>
-						<a href="{{ path('app_logout') }}" class="ml-4 text-red-500 hover:text-red-700">
-							Logout
-						</a>
-					{% else %}
-						<a href="{{ path('app_login') }}" class="text-green-600 hover:text-green-800">
-							Login
-						</a>
-						<a href="{{ path('app_register') }}" class="ml-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-							Sign Up
-						</a>
-					{% endif %}
-				</div>
-			</div>
-		</header>
+        <!-- Authentication -->
+        <div class="flex items-center space-x-4">
+            {% if app.user %}
+                <span class="text-gray-700">
+                    Welcome, <span class="font-semibold text-green-700">{{ app.user.username }}</span>
+                </span>
+                <a href="{{ path('app_logout') }}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-md">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="text-green-600 hover:text-green-800 transition">
+                    Login
+                </a>
+                <a href="{{ path('app_register') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-md">
+                    Sign Up
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
 
 
 		{% block body %}

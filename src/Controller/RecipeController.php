@@ -58,13 +58,7 @@ final class RecipeController extends AbstractController
                     throw new \Exception('Erreur lors du téléchargement du fichier.');
                 }
 
-                // Add categories to recipe
-                $categories = $form->get('categories')->getData();
-                foreach ($categories as $category) {
-                    $recipe->addCategory($category);
-                    $category->addRecipe($recipe); // Ensure bidirectional relationship
-                    $entityManager->persist($category); // Persist category if needed
-                }
+                
 
 
                 $img = new Image();
@@ -72,9 +66,22 @@ final class RecipeController extends AbstractController
                 $recipe->addImage($img);
             }
 
+
+            // dd($recipe);
+            // Add categories to recipe
+            $categories = $form->get('categories')->getData();
+
+            foreach ($categories as $category) {
+                $recipe->addCategory($category);
+                $category->addRecipe($recipe); // Ensure bidirectional relationship
+                
+                $entityManager->persist($category); // Persist category if needed
+            }
+
             // handle others
             $recipe->setCreatedBy($this->getUser());
             $recipe->setSlug($slugger->slug($recipe->getName()));
+
 
 
             $entityManager->persist($recipe);
@@ -104,6 +111,12 @@ final class RecipeController extends AbstractController
     #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
+
+        if ($this->getUser() !== $recipe->getCreatedBy()) {
+            return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
 
@@ -122,6 +135,9 @@ final class RecipeController extends AbstractController
     #[Route('/{id}', name: 'app_recipe_delete', methods: ['POST'])]
     public function delete(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() !== $recipe->getCreatedBy()) {
+            return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('delete' . $recipe->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($recipe);
             $entityManager->flush();

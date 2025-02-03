@@ -35,7 +35,7 @@ class Recipe
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'recipe')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'recipe', cascade: ["persist"])]
     private Collection $categories;
 
     #[ORM\ManyToOne(inversedBy: 'recipes')]
