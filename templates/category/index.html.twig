@@ -1,35 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Category index{% endblock %}
+{% block title %}Categories{% endblock %}
 
 {% block body %}
-    <h1>Category index</h1>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Page Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-green-700">Categories</h1>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.name }}</td>
-                <td>
-                    <a href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_category_new') }}">Create new</a>
+        <!-- Categories Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for category in categories %}
+                <a href="{{ path('app_category_show', {'id': category.id}) }}" class="block bg-green-100 p-3 rounded-lg shadow-md text-center hover:bg-green-200">
+                    <h3 class="text-xl font-semibold text-green-700">
+                        {{ category.name }}
+                    </h3>
+                </a>
+            {% else %}
+                <p class="text-gray-500 col-span-full text-center">No categories found.</p>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
