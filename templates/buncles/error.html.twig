@@ -1,0 +1,17 @@
+{# templates/bundles/TwigBundle/Exception/error.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="flex items-center justify-center min-h-screen bg-gray-700">
+        <div class="bg-white p-8 rounded-lg shadow-md text-center">
+            <h1 class="text-4xl font-bold text-red-500">Oops! An error occurred</h1>
+            <div class="bg-white p-8 rounded-lg text-gray-700 shadow-md text-center">
+            {% block error_content %}{% endblock %}
+            </div>
+            <p class="mt-4 text-black">
+                We are sorry for the inconvenience. Please try again later or <a href="{{ path('app_home') }}" class="text-blue-500 underline">return to the homepage</a>.
+            </p>
+        </div>
+    </div>
+{% endblock %}
+

@@ -2,14 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/recipe')]
 final class RecipeController extends AbstractController
@@ -22,8 +27,9 @@ final class RecipeController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager , SluggerInterface $slugger, #[Autowire('uploads/recipes')] string $recipeDirectory): Response
     {
         $recipe = new Recipe();
 
@@ -33,12 +39,44 @@ final class RecipeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            
+
+
+            $imageFile = $form->get('image')->getData();
+
+            
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                
+                try {
+                    $imageFile->move(
+                        $recipeDirectory,
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('Erreur lors du téléchargement du fichier.');
+                }
+                
+                
+                $img = new Image();
+                $img->setName($newFilename);
+                $recipe->addImage($img);
+
+                
+            }
+            
             $recipe->setCreatedBy($this->getUser());
+            $recipe->setSlug($slugger->slug($recipe->getName()));
+
             $entityManager->persist($recipe);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        
 
         return $this->render('recipe/new.html.twig', [
             'recipe' => $recipe,
@@ -54,6 +92,7 @@ final class RecipeController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {

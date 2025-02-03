@@ -1,0 +1,43 @@
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+</style>
+
+<h2>Welcome to MyCookingApp</h2>
+
+<p>Dear {{ user.username }},</p>
+
+<p>You have successfully registered to MyCookingApp! We are happy to have you on board.</p>
+
+<p>Here are your login details:</p>
+
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Password</th>
+    </tr>
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>t'es censé t'en rappeler</td>
+    </tr>
+</table>
+
+<p>Now you can <a href="./localhost:8000/login">login</a> and start creating your own recipes!</p>

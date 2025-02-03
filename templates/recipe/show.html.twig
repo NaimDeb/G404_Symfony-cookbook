@@ -2,41 +2,66 @@
 
 {% block title %}Recipe{% endblock %}
 
+
 {% block body %}
-    <h1>Recipe</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ recipe.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ recipe.name }}</td>
-            </tr>
-            <tr>
-                <th>Created at</th>
-                <td>{{ recipe.createdAt ? recipe.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Created by</th>
-                <td>{{ recipe.createdby.username }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ recipe.description }}</td>
-            </tr>
-            <tr>
-                <th>Slug</th>
-                <td>{{ recipe.slug }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Action Links at the Top -->
+        <div class="flex justify-between mb-6">
+            <a href="{{ path('app_recipe_index') }}" class="text-green-600 hover:text-green-800 font-medium">Back to List</a>
+            <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}" class="text-green-600 hover:text-green-800 font-medium">Edit Recipe</a>
+        </div>
 
-    <a href="{{ path('app_recipe_index') }}">back to list</a>
+        <!-- Recipe Main Container -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col md:flex-row">
+            <!-- Recipe Image Section -->
+            <div class="w-full md:w-1/3 p-4 flex justify-center">
+                <img src="{{ asset('uploads/recipes/' ~ recipe.image[0].name | default('default-recipe.png')) }}" alt="{{ recipe.name }}" class="w-full h-auto rounded-lg shadow-md">
+            </div>
+            
+            <!-- Recipe Details Section Below Image -->
+            <div class="w-full md:w-2/3 p-6 flex flex-col space-y-6">
+                <h1 class="text-3xl font-bold text-green-700">{{ recipe.name }}</h1>
+                
+                <!-- Recipe Details Table -->
+                <table class="table-auto w-full text-gray-800">
+                    <tbody>
+                        <tr>
+                            <th class="text-left text-lg font-medium text-gray-600 py-2">Id</th>
+                            <td class="py-2">{{ recipe.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left text-lg font-medium text-gray-600 py-2">Created at</th>
+                            <td class="py-2">{{ recipe.createdAt ? recipe.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left text-lg font-medium text-gray-600 py-2">Created by</th>
+                            <td class="py-2">{{ recipe.createdby.username }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-left text-lg font-medium text-gray-600 py-2">Slug</th>
+                            <td class="py-2">{{ recipe.slug }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <a href="{{ path('app_recipe_edit', {'id': recipe.id}) }}">edit</a>
+                <!-- Recipe Description -->
+                <div>
+                    <h2 class="text-xl font-semibold text-green-600 mb-2">Description:</h2>
+                    <p class="text-gray-700">{{ recipe.description }}</p>
+                </div>
 
-    {{ include('recipe/_delete_form.html.twig') }}
+                <!-- Recipe Preparation (commented out) -->
+                {# <div>
+                    <h2 class="text-xl font-semibold text-green-600 mb-2">Preparation:</h2>
+                    <p class="text-gray-700">{{ recipe.preparation | raw }}</p>
+                </div> #}
+
+                <!-- Delete Form -->
+                <div class="mt-4">
+                    {{ include('recipe/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
